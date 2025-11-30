@@ -1,0 +1,39 @@
+server:
+  port: 55000
+
+ams:
+  feature-stream-engine:
+    config-dir: "config"
+    flow-list-path: "config/flow.list"
+    bootstrap-servers: "localhost:19092,localhost:19093,localhost:19094"
+    group-id: "ams-feature-stream-engine"
+    max-poll-records: 20
+
+spring:
+  datasource:
+    hikari:
+      goldilocks:
+        max-allowed-packet: 200MB
+        driver-class-name: com.singlestore.jdbc.Driver
+        jdbc-url: jdbc:singlestore://localhost:3318/ams?rewriteBatchedStatements=true
+        username: root
+        password: 1234
+      singlestore:
+        max-allowed-packet: 500MB
+        driver-class-name: com.singlestore.jdbc.Driver
+        jdbc-url: jdbc:singlestore://localhost:3318/ams?rewriteBatchedStatements=true
+        username: root
+        password: 1234
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  jpa:
+    show_sql: true
+    properties:
+      hibernate:
+        ddl-auto: none
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        use_sql_comments: true

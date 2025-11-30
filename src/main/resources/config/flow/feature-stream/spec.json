@@ -1,0 +1,17 @@
+{
+  "apiPath": "feature-stream",
+  "name": "feature-stream",
+  "processes": [
+    {
+      "type": "DERIVED",
+      "detailType": "DB_QUERY",
+      "attribute": {
+        "database": "SINGLESTORE",
+        "queryFilePath": "sql/process-derived-query.sql",
+        "fieldSpecs": [
+          {"name": "derived", "type": "INTEGER"}
+        ]
+      }
+    }
+  ]
+}

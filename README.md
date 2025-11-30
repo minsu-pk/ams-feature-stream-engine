@@ -1,2 +1,1 @@
-# ams-feature-stream-engine
-ams-feature-stream-engine
+kafka-topics --create --topic raw-tx-log --bootstrap-server kafka-1:9092,kafka-2:9092,kafka-3:9092 --partitions 3 --replication-factor 2
