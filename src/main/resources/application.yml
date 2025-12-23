@@ -5,9 +5,13 @@ ams:
   feature-stream-engine:
     config-dir: "config"
     flow-list-path: "config/flow.list"
-    bootstrap-servers: "localhost:19092,localhost:19093,localhost:19094"
+    bootstrap-servers: "localhost:19092"
     group-id: "ams-feature-stream-engine"
     max-poll-records: 20
+    exclude-from-features: "uuid,dt,cust_id,acct_nbr,counter_acct_nbr,tx_tp,wd_or_dp"
+    ml-api:
+      base-url: "http://localhost:34580"
+      context-path: "predict"
 
 spring:
   datasource:
@@ -15,13 +19,13 @@ spring:
       goldilocks:
         max-allowed-packet: 200MB
         driver-class-name: com.singlestore.jdbc.Driver
-        jdbc-url: jdbc:singlestore://localhost:3318/ams?rewriteBatchedStatements=true
+        jdbc-url: jdbc:singlestore://localhost:3306/ams?rewriteBatchedStatements=true
         username: root
         password: 1234
       singlestore:
         max-allowed-packet: 500MB
         driver-class-name: com.singlestore.jdbc.Driver
-        jdbc-url: jdbc:singlestore://localhost:3318/ams?rewriteBatchedStatements=true
+        jdbc-url: jdbc:singlestore://localhost:3306/ams?rewriteBatchedStatements=true
         username: root
         password: 1234
 

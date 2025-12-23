@@ -4,9 +4,13 @@ import com.kbank.ams.featurestreamengine.domain.flow.FlowModel;
 import java.util.List;
 import java.util.Map;
 
-public sealed interface MultiDbJdbcOperations permits SgsJdbcTemplate, GlkJdbcTemplate{
+public sealed interface MultiDbJdbcOperations<T> permits SgsJdbcTemplate, GlkJdbcTemplate {
     List<Map<String, Object>> select(String query, List<FlowModel.FieldSpec> fieldSpecs);
+
     List<Map<String, Object>> selectWithParams(String query, List<FlowModel.FieldSpec> fieldSpecs, Map<String, Object> params);
+
     Map<String, Object> selectOneWithParams(String query, List<FlowModel.FieldSpec> fieldSpecs, Map<String, Object> params);
+
     Boolean selectBool(String query, Map<String, Object> params);
+    int bulkInsert(String updateSql, List<T> items);
 }

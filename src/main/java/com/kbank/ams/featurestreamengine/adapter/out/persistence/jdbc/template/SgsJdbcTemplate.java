@@ -1,6 +1,8 @@
 package com.kbank.ams.featurestreamengine.adapter.out.persistence.jdbc.template;
 
 import com.kbank.ams.featurestreamengine.domain.flow.FlowModel;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -9,12 +11,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public final class SgsJdbcTemplate implements MultiDbJdbcOperations {
+public final class SgsJdbcTemplate<T> implements MultiDbJdbcOperations<T> {
     @Qualifier("singlestoreJdbcTemplate")
     private final JdbcTemplate jdbcTemplate;
 
@@ -42,5 +46,17 @@ public final class SgsJdbcTemplate implements MultiDbJdbcOperations {
             log.info("{}", e);
             return true;
         }
+    }
+
+    @Override
+    public int bulkInsert(String updateSql, List<T> items) {
+        if (items == null || items.isEmpty()) return 0;
+        SqlParameterSource[] batch = items.stream()
+                .map(BeanPropertySqlParameterSource::new)
+                .toArray(SqlParameterSource[]::new);
+
+        int[] result = namedParameterJdbcTemplate.batchUpdate(updateSql, batch);
+
+        return Arrays.stream(result).filter(v-> v > 0).sum();
     }
 }

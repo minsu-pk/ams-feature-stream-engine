@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public final class GlkJdbcTemplate implements MultiDbJdbcOperations{
+public final class GlkJdbcTemplate<T> implements MultiDbJdbcOperations<T>{
     @Qualifier("goldilocksJdbcTemplate")
     private final JdbcTemplate jdbcTemplate;
     @Qualifier("goldilocksNamedParameterJdbcTemplate")
@@ -41,5 +41,10 @@ public final class GlkJdbcTemplate implements MultiDbJdbcOperations{
             log.info("{}", e);
             return true;
         }
+    }
+
+    @Override
+    public int bulkInsert(String updateSql, List<T> items) {
+        return 0;
     }
 }
