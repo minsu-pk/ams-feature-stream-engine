@@ -19,7 +19,7 @@ public class JdbcStoreAdapter implements StoreJdbcPort {
 
     @Override
     public int store(StoreJdbcCommand command) {
-        return JdbcOperation(FlowEnum.Database.SINGLESTORE).bulkInsert(command.getUpdatedSql(), command.getItems());
+        return JdbcOperation(FlowEnum.Database.SINGLESTORE).bulkInsert(command.getUpdateSql(), command.getItems());
     }
 
     private MultiDbJdbcOperations JdbcOperation(FlowEnum.Database database){

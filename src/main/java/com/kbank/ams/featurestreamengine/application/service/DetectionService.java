@@ -110,7 +110,7 @@ public class DetectionService<T> implements DetectionUseCase {
         List<FraudScoring> fraudScorings = outputs.stream().map(output -> new FraudScoring(identifierMap.get(output.getUuid()), output)).toList();
 
         log.info("fraudScorings : {}", fraudScorings);
-        storeJdbcPort.store(StoreJdbcCommand.<FraudScoring>builder().updatedSql(INSERT_FRAUD_SCORING_SQL).items(fraudScorings).build());
+        storeJdbcPort.store(StoreJdbcCommand.<FraudScoring>builder().updateSql(INSERT_FRAUD_SCORING_SQL).items(fraudScorings).build());
     }
 
     @PostConstruct
