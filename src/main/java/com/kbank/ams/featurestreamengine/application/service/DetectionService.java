@@ -83,6 +83,8 @@ public class DetectionService<T> implements DetectionUseCase {
                     return FraudScoringInput.builder().uuid(uuid).features(features).build();
                 }).toList();
 
+        log.info("inputs : {}", inputs);
+
         /*
          *  IDENTIFIER MAP
          */
