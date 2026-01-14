@@ -104,6 +104,31 @@ public class ExpressionEvaluator {
                     : resolveAtomicOrFuncValue(args.get(2).trim(), record);
         }
 
+        if (expr.regionMatches(true, 0, "NVL(", 0, 4)) {
+            List<String> args = splitArgsTopLevel(extractCallArgs(expr, "NVL"));
+            if (args.size() != 2) {
+                throw new IllegalArgumentException("NVL(value, defaultValue)");
+            }
+
+            Object v = resolveAtomicOrFuncValue(args.get(0), record);
+            return (v != null)
+                    ? v
+                    : resolveAtomicOrFuncValue(args.get(1), record);
+        }
+
+        if (expr.regionMatches(true, 0, "COALESCE(", 0, 9)) {
+            List<String> args = splitArgsTopLevel(extractCallArgs(expr, "COALESCE"));
+            if (args.isEmpty()) {
+                throw new IllegalArgumentException("COALESCE requires at least one argument");
+            }
+
+            for (String a : args) {
+                Object v = resolveAtomicOrFuncValue(a, record);
+                if (v != null) return v;
+            }
+            return null;
+        }
+
         throw new UnsupportedOperationException("Unsupported expression: " + expr);
     }
 
@@ -148,7 +173,7 @@ public class ExpressionEvaluator {
 
         // function expression: only allow known functions (avoid false positives)
         String u = expr.toUpperCase();
-        if (u.startsWith("CONCAT(") || u.startsWith("TIMEDIFF(") || u.startsWith("TO_LOCAL_DATETIME(") || u.startsWith("IF(")) {
+        if (u.startsWith("CONCAT(") || u.startsWith("TIMEDIFF(") || u.startsWith("TO_LOCAL_DATETIME(") || u.startsWith("IF(") || u.startsWith("NVL(") || u.startsWith("COALESCE(")) {
             return evaluate(expr, record);
         }
 
