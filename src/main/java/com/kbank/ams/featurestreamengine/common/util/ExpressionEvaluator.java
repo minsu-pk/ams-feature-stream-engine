@@ -248,6 +248,22 @@ public class ExpressionEvaluator {
             }
         }
 
+        // IS NOT NULL (must be before IS NULL)
+        int idxIsNotNull = indexOfTopLevelWordOp(condExpr, "IS NOT NULL");
+        if (idxIsNotNull > 0) {
+            String left = condExpr.substring(0, idxIsNotNull).trim();
+            Object leftVal = resolveAtomicOrFuncValue(left, record);
+            return leftVal != null;
+        }
+
+        // IS NULL
+        int idxIsNull = indexOfTopLevelWordOp(condExpr, "IS NULL");
+        if (idxIsNull > 0) {
+            String left = condExpr.substring(0, idxIsNull).trim();
+            Object leftVal = resolveAtomicOrFuncValue(left, record);
+            return leftVal == null;
+        }
+
         Object val = resolveAtomicOrFuncValue(condExpr, record);
         return toBoolean(val);
     }
