@@ -11,6 +11,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 @Configuration
@@ -37,19 +38,31 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object> batchKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, Map<String,Object>> singleKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Map<String,Object>> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-
-        // ✅ batch 모드
-        factory.setBatchListener(true);
-
-        // 필요하면 concurrency 조절 (파티션 수보다 크지 않게)
-        factory.setConcurrency(3);
-
-        // batch 단위로 커밋
-        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.BATCH);
-
+        factory.setBatchListener(false);
+        factory.setConcurrency(1);
+        factory.setCommonErrorHandler(new DefaultErrorHandler());
+        ContainerProperties props = factory.getContainerProperties();
+        props.setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
         return factory;
     }
+
+//    @Bean
+//    public ConcurrentKafkaListenerContainerFactory<String, Object> batchKafkaListenerContainerFactory() {
+//        ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+//        factory.setConsumerFactory(consumerFactory());
+//
+//        // ✅ batch 모드
+//        factory.setBatchListener(true);
+//
+//        // 필요하면 concurrency 조절 (파티션 수보다 크지 않게)
+//        factory.setConcurrency(3);
+//
+//        // batch 단위로 커밋
+//        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.BATCH);
+//
+//        return factory;
+//    }
 }
